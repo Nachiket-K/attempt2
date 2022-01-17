@@ -49,8 +49,8 @@ public class PubSubToBigQueryPipeline
     public static void main(String[] args)
     {
         PipelineOptionsFactory.register(PipelineOptions.class);
-        PipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(PipelineOptions.class);
-        run(options);
+        PipelineOptions PLoptions = PipelineOptionsFactory.fromArgs(args).withValidation().as(PipelineOptions.class);
+        run(PLoptions);
     }
     public static final Schema RSchema = Schema
             .builder()
@@ -58,14 +58,14 @@ public class PubSubToBigQueryPipeline
             .addStringField("name")
             .addStringField("surname")
             .build();
-    public static PipelineResult run(PipelineOptions options) 
+    public static PipelineResult run(PipelineOptions Poptions) 
     {
-        String PSsubscriptionName="projects/"+options.getProject()+"/subscriptions/"+options.getSubscription();
-        String oTableName=options.getProject()+":"+options.getTableName();
+        String PSsubscriptionName="projects/"+Poptions.getProject()+"/subscriptions/"+Poptions.getSubscription();
+        String oTableName=Poptions.getProject()+":"+Poptions.getTableName();
         // Create the pipeline
-        Pipeline pipeline = Pipeline.create(options);
-        options.setJobName(options.getJobName());
-        PCollection<String> DataOne=pipeline.apply("ReadMessageFromPubSub", PubsubIO.readStrings().fromSubscription(PSsubscriptionName));
+        Pipeline Npipeline = Pipeline.create(Poptions);
+        Poptions.setJobName(Poptions.getJobName());
+        PCollection<String> DataOne=Npipeline.apply("ReadMessageFromPubSub", PubsubIO.readStrings().fromSubscription(PSsubscriptionName));
 
         DataOne.apply("TransformToRow", JsonToRow.withSchema(RSchema))
                 .apply("WriteDataToTable",
@@ -73,7 +73,7 @@ public class PubSubToBigQueryPipeline
                                 .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
 
-        return pipeline.run();
+        return Npipeline.run();
        
     }
 }
