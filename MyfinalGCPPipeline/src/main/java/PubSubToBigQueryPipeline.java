@@ -28,22 +28,19 @@ public class PubSubToBigQueryPipeline
 {
     private static final Logger LOG = LoggerFactory.getLogger(PubSubToBigQueryPipeline.class);
 
-    public interface PipelineOptions extends DataflowPipelineOptions {
+    public interface PipelineOptions extends DataflowPipelineOptions
+     {
+        @Description("BigQuery table name")
+        String getTableName();
+        void setTableName(String tableName);
+        
         @Description("Input topic name")
         String getInputTopic();
         void setInputTopic(String inputTopic);
 
-        @Description("BigQuery table name")
-        String getTableName();
-        void setTableName(String tableName);
-
         @Description("input Subscription of PubSub")
         String getSubscription();
         void setSubscription(String subscription);
-
-        @Description("DLQ topic of PubSub")
-        String getDlqTopic();
-        void setDlqTopic(String dlqTopic);
     }
 
     public static void main(String[] args)
